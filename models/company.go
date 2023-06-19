@@ -1,6 +1,9 @@
 package models
 
-import "github.com/fatih/structs"
+import (
+	"github.com/fatih/structs"
+	"github.com/go-playground/validator"
+)
 
 type CompanyType string
 
@@ -17,7 +20,7 @@ type Company struct {
 	Description  string      `json:"description,omitempty" bson:"description" binding:"max=3000"`
 	EmpCount     *uint16     `json:"total_employees" bson:"total_employees" binding:"required"`
 	IsRegistered *bool       `json:"registered" bson:"registered" binding:"required"`
-	Type         CompanyType `json:"type" bson:"type" binding:"required"`
+	Type         CompanyType `json:"type" bson:"type" binding:"required,companyType"`
 }
 
 type CompanyUpdate struct {
@@ -25,7 +28,7 @@ type CompanyUpdate struct {
 	Description  *string      `json:"description,omitempty" binding:"omitempty,max=3000"`
 	EmpCount     *uint16      `json:"total_employees,omitempty"`
 	IsRegistered *bool        `json:"registered,omitempty"`
-	Type         *CompanyType `json:"type,omitempty"`
+	Type         *CompanyType `json:"type,omitempty" binding:"omitempty,companyType"`
 }
 
 // Map function returns map values
@@ -46,4 +49,20 @@ func (co *Company) Names() []string {
 		names[i] = name
 	}
 	return names
+}
+
+func (ct CompanyType) IsValid() bool {
+	switch ct {
+	case Corporation, NonProfit, Cooperative, SoleProprietorship:
+		return true
+	}
+	return false
+}
+
+func validateCompanyType(fl validator.FieldLevel) bool {
+	value, ok := fl.Field().Interface().(*CompanyType)
+	if ok && value != nil {
+		return value.IsValid()
+	}
+	return false
 }
