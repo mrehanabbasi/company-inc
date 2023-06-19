@@ -12,7 +12,7 @@ const (
 )
 
 type Company struct {
-	ID           string      `json:"id"`
+	ID           string      `json:"id" bson:"_id"`
 	Name         string      `json:"name" bson:"company_name" binding:"required,min:3,max:15"`
 	Description  string      `json:"description,omitempty" bson:"description" binding:"max=3000"`
 	EmpCount     *uint16     `json:"total_employees" bson:"total_employees" binding:"required"`

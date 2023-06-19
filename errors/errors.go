@@ -1,4 +1,4 @@
-package constants
+package domainErr
 
 // const will be used for the status of api handlers.
 const (
