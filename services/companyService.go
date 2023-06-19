@@ -9,3 +9,7 @@ func (s *Service) AddCompany(company *models.Company) (*models.Company, error) {
 func (s *Service) GetCompanyByID(id string) (*models.Company, error) {
 	return s.db.GetCompanyByID(id)
 }
+
+func (s *Service) DeleteCompany(id string) error {
+	return s.db.DeleteCompany(id)
+}
