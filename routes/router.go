@@ -2,15 +2,17 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/mrehanabbasi/company-inc/database"
 	"github.com/mrehanabbasi/company-inc/handlers"
+	"github.com/mrehanabbasi/company-inc/services"
 )
 
-func NewRouter() *gin.Engine {
+func NewRouter(dbClient *database.Client) *gin.Engine {
 	router := gin.Default()
 	router.RedirectTrailingSlash = true
 	router.RedirectFixedPath = true
 
-	handler := handlers.NewHandler()
+	handler := handlers.NewHandler(*services.NewService(dbClient))
 
 	v1 := router.Group("/v1")
 

@@ -13,11 +13,11 @@ import (
 
 const companyCollectionName = "Company"
 
-type client struct {
-	conn *mongo.Client
+type Client struct {
+	Conn *mongo.Client
 }
 
-func InitDB() *client {
+func InitDB() *Client {
 	uri := fmt.Sprintf("mongodb://%s:%s", viper.GetString(config.DbHost), viper.GetString(config.DbPort))
 	log.Info("Initializing MongoDB: ", uri)
 
@@ -27,13 +27,13 @@ func InitDB() *client {
 		panic(err)
 	}
 
-	return &client{conn: cli}
+	return &Client{Conn: cli}
 }
 
-func (m *client) GetMongoDatabase() *mongo.Database {
-	return m.conn.Database(viper.GetString(config.DbName))
+func (m *Client) GetMongoDatabase() *mongo.Database {
+	return m.Conn.Database(viper.GetString(config.DbName))
 }
 
-func (m *client) GetMongoCompanyCollection() *mongo.Collection {
+func (m *Client) GetMongoCompanyCollection() *mongo.Collection {
 	return m.GetMongoDatabase().Collection(companyCollectionName)
 }

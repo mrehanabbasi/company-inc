@@ -1,8 +1,13 @@
 package handlers
 
+import "github.com/mrehanabbasi/company-inc/services"
+
 type Handler struct {
+	CompanyService services.Service
 }
 
-func NewHandler() Handler {
-	return Handler{}
+func NewHandler(companyService services.Service) Handler {
+	return Handler{
+		CompanyService: companyService,
+	}
 }
