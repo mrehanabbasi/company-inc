@@ -32,6 +32,8 @@ func init() {
 	viper.SetDefault(DbName, "companies_portal")
 	viper.SetDefault(DbHost, "localhost")
 	viper.SetDefault(DbPort, "27017")
+	viper.SetDefault(DbUser, "user")
+	viper.SetDefault(DbPass, "password")
 	viper.SetDefault(ServerHost, "127.0.0.1")
 	viper.SetDefault(ServerPort, "8080")
 }
