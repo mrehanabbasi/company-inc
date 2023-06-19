@@ -18,7 +18,7 @@ type Client struct {
 }
 
 func InitDB() *Client {
-	uri := fmt.Sprintf("mongodb://%s:%s", viper.GetString(config.DbHost), viper.GetString(config.DbPort))
+	uri := fmt.Sprintf("mongodb://%s:%s@%s:%s", viper.GetString(config.DbUser), viper.GetString(config.DbPass), viper.GetString(config.DbHost), viper.GetString(config.DbPort))
 	log.Info("Initializing MongoDB: ", uri)
 
 	cli, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
