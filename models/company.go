@@ -20,6 +20,14 @@ type Company struct {
 	Type         CompanyType `json:"type" bson:"type" binding:"required"`
 }
 
+type CompanyUpdate struct {
+	Name         *string      `json:"name,omitempty" binding:"omitempty,min=3,max=15"`
+	Description  *string      `json:"description,omitempty" binding:"omitempty,max=3000"`
+	EmpCount     *uint16      `json:"total_employees,omitempty"`
+	IsRegistered *bool        `json:"registered,omitempty"`
+	Type         *CompanyType `json:"type,omitempty"`
+}
+
 // Map function returns map values
 func (co *Company) Map() map[string]interface{} {
 	return structs.Map(co)

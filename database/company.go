@@ -27,6 +27,44 @@ func (m Client) AddCompany(company *models.Company) (*models.Company, error) {
 	return company, nil
 }
 
+func (m Client) UpdateCompany(id string, companyUpdate *models.CompanyUpdate) (*models.Company, error) {
+	collection := m.GetMongoCompanyCollection()
+
+	// Fetch the existing company from the DB
+	company, err := m.GetCompanyByID(id)
+	if err != nil {
+		log.Error(err.Error())
+		return nil, err
+	}
+
+	// Apply the updates
+	if companyUpdate.Name != nil {
+		company.Name = *companyUpdate.Name
+	}
+	if companyUpdate.Description != nil {
+		company.Description = *companyUpdate.Description
+	}
+	if companyUpdate.EmpCount != nil {
+		company.EmpCount = companyUpdate.EmpCount
+	}
+	if companyUpdate.IsRegistered != nil {
+		company.IsRegistered = companyUpdate.IsRegistered
+	}
+	if companyUpdate.Type != nil {
+		company.Type = *companyUpdate.Type
+	}
+
+	// Updating the record in the DB
+	company.ID = id
+
+	if _, err := collection.UpdateOne(context.TODO(), bson.M{"_id": bson.M{"$eq": company.ID}}, bson.M{"$set": company}); err != nil {
+		log.Error(err.Error())
+		return nil, errors.Wrap(err, "failed to updated company record")
+	}
+
+	return company, nil
+}
+
 func (m Client) GetCompanyByID(id string) (*models.Company, error) {
 	var company *models.Company
 	collection := m.GetMongoCompanyCollection()
