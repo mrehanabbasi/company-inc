@@ -45,10 +45,10 @@ func (m Client) UpdateCompany(id string, companyUpdate *models.CompanyUpdate) (*
 		company.Description = *companyUpdate.Description
 	}
 	if companyUpdate.EmpCount != nil {
-		company.EmpCount = companyUpdate.EmpCount
+		company.EmpCount = *companyUpdate.EmpCount
 	}
 	if companyUpdate.IsRegistered != nil {
-		company.IsRegistered = companyUpdate.IsRegistered
+		company.IsRegistered = *companyUpdate.IsRegistered
 	}
 	if companyUpdate.Type != nil {
 		company.Type = *companyUpdate.Type

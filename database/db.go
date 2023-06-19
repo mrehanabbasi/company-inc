@@ -7,6 +7,7 @@ import (
 	"github.com/mrehanabbasi/company-inc/config"
 	log "github.com/mrehanabbasi/company-inc/logger"
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -41,4 +42,21 @@ func (m *Client) GetMongoDatabase() *mongo.Database {
 
 func (m *Client) GetMongoCompanyCollection() *mongo.Collection {
 	return m.GetMongoDatabase().Collection(companyCollectionName)
+}
+
+func (m *Client) InitIndices() error {
+	// Create a unique index on the "company_name" field
+	indexModel := mongo.IndexModel{
+		Keys:    bson.M{"company_name": 1},
+		Options: options.Index().SetUnique(true),
+	}
+
+	// Create the index
+	_, err := m.GetMongoCompanyCollection().Indexes().CreateOne(context.TODO(), indexModel)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	return nil
 }

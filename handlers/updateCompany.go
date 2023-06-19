@@ -13,10 +13,20 @@ func (h *Handler) UpdateCompany(c *gin.Context) {
 	id := c.Param("id")
 
 	var companyUpdate *models.CompanyUpdate
-	err := c.ShouldBindJSON(companyUpdate)
+	err := c.ShouldBindJSON(&companyUpdate)
 	if err != nil {
 		log.Error(err.Error())
-		c.JSON(http.StatusBadRequest, domainErr.NewAPIError(domainErr.BadRequest, err.Error()))
+		errs, ok := models.ErrValidationSlice(err)
+		if !ok {
+			c.JSON(http.StatusBadRequest, domainErr.NewAPIError(domainErr.BadRequest, err.Error()))
+			return
+		}
+
+		if len(errs) > 1 {
+			c.JSON(http.StatusBadRequest, domainErr.NewAPIErrors(domainErr.BadRequest, errs))
+		} else {
+			c.JSON(http.StatusBadRequest, domainErr.NewAPIError(domainErr.BadRequest, errs[0]))
+		}
 		return
 	}
 

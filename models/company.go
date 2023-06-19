@@ -1,8 +1,10 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/fatih/structs"
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 type CompanyType string
@@ -15,11 +17,11 @@ const (
 )
 
 type Company struct {
-	ID           string      `json:"id" bson:"_id"`
-	Name         string      `json:"name" bson:"company_name" binding:"required,min:3,max:15"`
+	ID           string      `json:"id,omitempty" bson:"_id"`
+	Name         string      `json:"name" bson:"company_name" binding:"required,min=3,max=15"`
 	Description  string      `json:"description,omitempty" bson:"description" binding:"max=3000"`
-	EmpCount     *uint16     `json:"total_employees" bson:"total_employees" binding:"required"`
-	IsRegistered *bool       `json:"registered" bson:"registered" binding:"required"`
+	EmpCount     uint16      `json:"total_employees" bson:"total_employees" binding:"required"`
+	IsRegistered bool        `json:"registered" bson:"registered" binding:"required"`
 	Type         CompanyType `json:"type" bson:"type" binding:"required,companyType"`
 }
 
@@ -60,9 +62,45 @@ func (ct CompanyType) IsValid() bool {
 }
 
 func validateCompanyType(fl validator.FieldLevel) bool {
-	value, ok := fl.Field().Interface().(*CompanyType)
-	if ok && value != nil {
-		return value.IsValid()
+	value := fl.Field().Interface()
+	switch v := value.(type) {
+	case CompanyType:
+		switch v {
+		case Corporation, NonProfit, Cooperative, SoleProprietorship:
+			return true
+		}
+	case *CompanyType:
+		if v != nil {
+			switch *v {
+			case Corporation, NonProfit, Cooperative, SoleProprietorship:
+				return true
+			}
+		}
 	}
 	return false
+}
+
+func ErrValidationSlice(err error) ([]string, bool) {
+	errs := []string{}
+	ve, ok := err.(validator.ValidationErrors)
+	if ok {
+		for _, fe := range ve {
+			errStr := errMsgFromValidator(fe.Field(), fe.Tag(), fe.Param())
+			errs = append(errs, errStr)
+		}
+	}
+
+	return errs, ok
+}
+
+func errMsgFromValidator(field, tag, value string) string {
+	switch tag {
+	case "required":
+		return fmt.Sprintf("%s field is required", field)
+	case "min":
+		return fmt.Sprintf("minimum %v characters required for %s", value, field)
+	case "max":
+		return fmt.Sprintf("maximum %v characters allowed for %s", value, field)
+	}
+	return tag
 }

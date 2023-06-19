@@ -17,6 +17,7 @@ func main() {
 
 	// Initializing database
 	dbClient := database.InitDB()
+	_ = dbClient.InitIndices()
 
 	// Register all the routes
 	server := routes.NewRouter(dbClient)
