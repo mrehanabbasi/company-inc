@@ -35,5 +35,5 @@ func (h *Handler) UserSignup(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, user)
+	c.Status(http.StatusCreated)
 }
