@@ -15,6 +15,11 @@ func NewRouter(dbClient *database.Client) *gin.Engine {
 	handler := handlers.NewHandler(*services.NewService(dbClient))
 
 	v1 := router.Group("/v1")
+	{
+		v1.POST("/signup")
+		v1.POST("/login")
+		v1.POST("/logout")
+	}
 
 	companies := v1.Group("/companies")
 	{

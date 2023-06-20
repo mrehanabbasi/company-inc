@@ -9,11 +9,9 @@ import (
 	"github.com/mrehanabbasi/company-inc/models"
 )
 
-func (h *Handler) UpdateCompany(c *gin.Context) {
-	id := c.Param("id")
-
-	var companyUpdate *models.CompanyUpdate
-	err := c.ShouldBindJSON(&companyUpdate)
+func (h *Handler) UserSignup(c *gin.Context) {
+	var user *models.User
+	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		log.Error(err.Error())
 		errs, ok := models.ErrValidationSlice(err)
@@ -30,18 +28,12 @@ func (h *Handler) UpdateCompany(c *gin.Context) {
 		return
 	}
 
-	company, err := h.Service.UpdateCompany(id, companyUpdate)
+	user, err = h.Service.UserSignup(user)
 	if err != nil {
 		log.Error(err.Error())
-		switch apiErr := err.(*domainErr.APIError); {
-		case apiErr.IsError(domainErr.NotFound):
-			c.JSON(http.StatusNotFound, domainErr.NewAPIError(domainErr.NotFound, err.Error()))
-			return
-		default:
-			c.JSON(http.StatusInternalServerError, domainErr.NewAPIError(domainErr.InternalServerError, err.Error()))
-			return
-		}
+		c.JSON(http.StatusInternalServerError, domainErr.NewAPIError(domainErr.InternalServerError, err.Error()))
+		return
 	}
 
-	c.JSON(http.StatusOK, company)
+	c.JSON(http.StatusCreated, user)
 }

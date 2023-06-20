@@ -11,7 +11,7 @@ import (
 func (h *Handler) DeleteCompany(c *gin.Context) {
 	id := c.Param("id")
 
-	if err := h.CompanyService.DeleteCompany(id); err != nil {
+	if err := h.Service.DeleteCompany(id); err != nil {
 		log.Error(err.Error())
 		switch apiErr := err.(*domainErr.APIError); {
 		case apiErr.IsError(domainErr.NotFound):
