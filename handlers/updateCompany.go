@@ -30,7 +30,7 @@ func (h *Handler) UpdateCompany(c *gin.Context) {
 		return
 	}
 
-	company, err := h.CompanyService.UpdateCompany(id, companyUpdate)
+	company, err := h.Service.UpdateCompany(id, companyUpdate)
 	if err != nil {
 		log.Error(err.Error())
 		switch apiErr := err.(*domainErr.APIError); {
@@ -41,6 +41,11 @@ func (h *Handler) UpdateCompany(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, domainErr.NewAPIError(domainErr.InternalServerError, err.Error()))
 			return
 		}
+	}
+
+	// Product message queue event
+	if err = h.MsqConn.ProduceCompanyEvent(company, http.MethodPatch); err != nil {
+		log.Error(err.Error())
 	}
 
 	c.JSON(http.StatusOK, company)

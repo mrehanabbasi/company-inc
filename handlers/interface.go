@@ -1,13 +1,18 @@
 package handlers
 
-import "github.com/mrehanabbasi/company-inc/services"
+import (
+	"github.com/mrehanabbasi/company-inc/msq"
+	"github.com/mrehanabbasi/company-inc/services"
+)
 
 type Handler struct {
-	CompanyService services.Service
+	Service services.Service
+	MsqConn *msq.MsqConn
 }
 
-func NewHandler(companyService services.Service) Handler {
+func NewHandler(service services.Service, kafkaConn *msq.MsqConn) Handler {
 	return Handler{
-		CompanyService: companyService,
+		Service: service,
+		MsqConn: kafkaConn,
 	}
 }

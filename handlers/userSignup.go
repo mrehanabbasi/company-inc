@@ -9,9 +9,9 @@ import (
 	"github.com/mrehanabbasi/company-inc/models"
 )
 
-func (h *Handler) AddCompany(c *gin.Context) {
-	var company *models.Company
-	err := c.ShouldBindJSON(&company)
+func (h *Handler) UserSignup(c *gin.Context) {
+	var user *models.User
+	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		log.Error(err.Error())
 		errs, ok := models.ErrValidationSlice(err)
@@ -28,17 +28,12 @@ func (h *Handler) AddCompany(c *gin.Context) {
 		return
 	}
 
-	company, err = h.Service.AddCompany(company)
+	user, err = h.Service.UserSignup(user)
 	if err != nil {
 		log.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, domainErr.NewAPIError(domainErr.InternalServerError, err.Error()))
 		return
 	}
 
-	// Product message queue event
-	if err = h.MsqConn.ProduceCompanyEvent(company, http.MethodPost); err != nil {
-		log.Error(err.Error())
-	}
-
-	c.JSON(http.StatusCreated, company)
+	c.Status(http.StatusCreated)
 }
