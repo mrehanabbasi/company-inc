@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  db:
+    image: mongo:6.0.6-jammy
+    restart: always
+    # ports:
+    #   - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=db_user
+      - MONGO_INITDB_ROOT_PASSWORD=securePassword123
+      - MONGO_INITDB_DATABASE=companies_db
+    volumes:
+      - company_db:/data/db
+    networks:
+      - company-service-network
+
+  company-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - DB_NAME=company_db
+      - DB_HOST=db
+      - DB_PORT=27017
+      - DB_USER=db_user
+      - DB_PASS=securePassword123
+      # - SERVER_HOST=127.0.0.1
+      # - SERVER_PORT=8080
+      # - GIN_MODE=release
+    # env_file:
+    #   - .env
+    depends_on:
+      - db
+    networks:
+      - company-service-network
+
+networks:
+  company-service-network:
+    driver: bridge
+
+volumes:
+  company_db:
