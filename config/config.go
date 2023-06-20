@@ -18,6 +18,10 @@ const (
 	SecretKey   = "auth.secret"
 	CookieName  = "auth.cookie"
 	TokenExpiry = "auth.expiry"
+
+	KafkaHost  = "kafka.host"
+	KafkaPort  = "kafka.port"
+	KafkaTopic = "kafka.topic"
 )
 
 func init() {
@@ -37,6 +41,11 @@ func init() {
 	_ = viper.BindEnv(CookieName, "AUTH_COOKIE_NAME")
 	_ = viper.BindEnv(TokenExpiry, "AUTH_TOKEN_EXPIRY_TIME")
 
+	// env var for kafka
+	_ = viper.BindEnv(KafkaHost, "KAFKA_HOST")
+	_ = viper.BindEnv(KafkaPort, "KAFKA_PORT")
+	_ = viper.BindEnv(KafkaTopic, "KAFKA_TOPIC")
+
 	// defaults
 	viper.SetDefault(DbName, "companies_portal")
 	viper.SetDefault(DbHost, "localhost")
@@ -47,4 +56,7 @@ func init() {
 	viper.SetDefault(ServerPort, "8080")
 	viper.SetDefault(CookieName, "jwt")
 	viper.SetDefault(TokenExpiry, "2h")
+	viper.SetDefault(KafkaHost, "127.0.0.1")
+	viper.SetDefault(KafkaPort, "9094")
+	viper.SetDefault(KafkaTopic, "company-events")
 }

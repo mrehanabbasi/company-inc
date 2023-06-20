@@ -21,16 +21,16 @@ type Client struct {
 	Conn *mongo.Client
 }
 
-func InitDB() *Client {
+func InitDB(ctx context.Context) *Client {
 	uri := fmt.Sprintf("mongodb://%s:%s@%s:%s",
 		viper.GetString(config.DbUser),
 		viper.GetString(config.DbPass),
 		viper.GetString(config.DbHost),
 		viper.GetString(config.DbPort),
 	)
-	log.Info("Initializing MongoDB: ", uri)
+	log.Info("Initializing MongoDB: ", fmt.Sprintf("mongodb://****:****@%s:%s", viper.GetString(config.DbHost), viper.GetString(config.DbPort)))
 
-	cli, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+	cli, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
 		log.Panic(err.Error())
 		panic(err)

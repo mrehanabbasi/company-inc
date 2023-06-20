@@ -35,5 +35,10 @@ func (h *Handler) AddCompany(c *gin.Context) {
 		return
 	}
 
+	// Product message queue event
+	if err = h.MsqConn.ProduceCompanyEvent(company, http.MethodPost); err != nil {
+		log.Error(err.Error())
+	}
+
 	c.JSON(http.StatusCreated, company)
 }
