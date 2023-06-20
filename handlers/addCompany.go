@@ -28,7 +28,7 @@ func (h *Handler) AddCompany(c *gin.Context) {
 		return
 	}
 
-	company, err = h.CompanyService.AddCompany(company)
+	company, err = h.Service.AddCompany(company)
 	if err != nil {
 		log.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, domainErr.NewAPIError(domainErr.InternalServerError, err.Error()))

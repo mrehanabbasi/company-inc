@@ -15,13 +15,18 @@ func NewRouter(dbClient *database.Client) *gin.Engine {
 	handler := handlers.NewHandler(*services.NewService(dbClient))
 
 	v1 := router.Group("/v1")
+	{
+		v1.POST("/signup", handler.UserSignup)
+		v1.POST("/login", handler.CheckAuth, handler.UserLogin)
+		v1.POST("/logout", handler.CheckAuth, handler.UserLogout)
+	}
 
 	companies := v1.Group("/companies")
 	{
-		companies.POST("", handler.AddCompany)
+		companies.POST("", handler.CheckAuth, handler.AddCompany)
 		companies.GET("/:id", handler.GetCompanyByID)
-		companies.PATCH("/:id", handler.UpdateCompany)
-		companies.DELETE("/:id", handler.DeleteCompany)
+		companies.PATCH("/:id", handler.CheckAuth, handler.UpdateCompany)
+		companies.DELETE("/:id", handler.CheckAuth, handler.DeleteCompany)
 	}
 
 	return router

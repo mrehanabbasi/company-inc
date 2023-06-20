@@ -3,11 +3,11 @@ package handlers
 import "github.com/mrehanabbasi/company-inc/services"
 
 type Handler struct {
-	CompanyService services.Service
+	Service services.Service
 }
 
-func NewHandler(companyService services.Service) Handler {
+func NewHandler(service services.Service) Handler {
 	return Handler{
-		CompanyService: companyService,
+		Service: service,
 	}
 }

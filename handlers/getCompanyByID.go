@@ -11,7 +11,7 @@ import (
 func (h *Handler) GetCompanyByID(c *gin.Context) {
 	id := c.Param("id")
 
-	company, err := h.CompanyService.GetCompanyByID(id)
+	company, err := h.Service.GetCompanyByID(id)
 	if err != nil {
 		log.Error(err.Error())
 		switch apiErr := err.(*domainErr.APIError); {

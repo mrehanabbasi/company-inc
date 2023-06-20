@@ -12,7 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const companyCollectionName = "Company"
+const (
+	companyCollectionName = "Company"
+	userCollectionName    = "User"
+)
 
 type Client struct {
 	Conn *mongo.Client
@@ -44,15 +47,32 @@ func (m *Client) GetMongoCompanyCollection() *mongo.Collection {
 	return m.GetMongoDatabase().Collection(companyCollectionName)
 }
 
+func (m *Client) GetMongoUserCollection() *mongo.Collection {
+	return m.GetMongoDatabase().Collection(userCollectionName)
+}
+
 func (m *Client) InitIndices() error {
 	// Create a unique index on the "company_name" field
-	indexModel := mongo.IndexModel{
+	coNameIndexModel := mongo.IndexModel{
 		Keys:    bson.M{"company_name": 1},
 		Options: options.Index().SetUnique(true),
 	}
 
-	// Create the index
-	_, err := m.GetMongoCompanyCollection().Indexes().CreateOne(context.TODO(), indexModel)
+	// Create a unique index on the "email" field
+	userEmailIndexModel := mongo.IndexModel{
+		Keys:    bson.M{"email": 1},
+		Options: options.Index().SetUnique(true),
+	}
+
+	// Create the company name index
+	_, err := m.GetMongoCompanyCollection().Indexes().CreateOne(context.TODO(), coNameIndexModel)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	// Create the user email index
+	_, err = m.GetMongoUserCollection().Indexes().CreateOne(context.TODO(), userEmailIndexModel)
 	if err != nil {
 		log.Fatal(err)
 		return err
