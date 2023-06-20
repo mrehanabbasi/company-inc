@@ -20,6 +20,7 @@ services:
     restart: always
     ports:
       - 9092:9092
+      - 9094:9094
     volumes:
       - kafka_data:/bitnami/kafka
     environment:

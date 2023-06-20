@@ -10,7 +10,7 @@ import (
 type CompanyType string
 
 const (
-	Corporation        CompanyType = "Corporation"
+	Corporation        CompanyType = "Corporations"
 	NonProfit          CompanyType = "NonProfit"
 	Cooperative        CompanyType = "Cooperative"
 	SoleProprietorship CompanyType = "Sole Proprietorship"
