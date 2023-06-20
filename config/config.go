@@ -16,7 +16,8 @@ const (
 	ServerPort = "server.port"
 
 	SecretKey   = "auth.secret"
-	TokenExpiry = "token.expiry"
+	CookieName  = "auth.cookie"
+	TokenExpiry = "auth.expiry"
 )
 
 func init() {
@@ -32,8 +33,9 @@ func init() {
 	_ = viper.BindEnv(ServerPort, "SERVER_PORT")
 
 	// env var for auth
-	_ = viper.BindEnv(SecretKey, "SECRET_KEY")
-	_ = viper.BindEnv(TokenExpiry, "TOKEN_EXPIRY_TIME")
+	_ = viper.BindEnv(SecretKey, "AUTH_SECRET_KEY")
+	_ = viper.BindEnv(CookieName, "AUTH_COOKIE_NAME")
+	_ = viper.BindEnv(TokenExpiry, "AUTH_TOKEN_EXPIRY_TIME")
 
 	// defaults
 	viper.SetDefault(DbName, "companies_portal")
@@ -43,5 +45,6 @@ func init() {
 	viper.SetDefault(DbPass, "password")
 	viper.SetDefault(ServerHost, "127.0.0.1")
 	viper.SetDefault(ServerPort, "8080")
+	viper.SetDefault(CookieName, "jwt")
 	viper.SetDefault(TokenExpiry, "2h")
 }

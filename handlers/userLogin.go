@@ -45,7 +45,8 @@ func (h *Handler) UserLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	// c.JSON(http.StatusOK, gin.H{"token": token})
+	c.Status(http.StatusNoContent)
 }
 
 func setTokenCookie(c *gin.Context, token string) error {
@@ -58,7 +59,7 @@ func setTokenCookie(c *gin.Context, token string) error {
 	}
 
 	cookie := &http.Cookie{
-		Name:     "jwt",
+		Name:     viper.GetString(config.CookieName),
 		Value:    token,
 		Expires:  time.Now().Add(tokenExpiry),
 		HttpOnly: true,

@@ -53,7 +53,7 @@ func (m Client) UserLogin(loginInfo *models.UserLogin) (string, error) {
 	}
 
 	// Generate JWT Token
-	token, err := generateToken(user.ID)
+	token, err := generateToken(user)
 	if err != nil {
 		log.Error(err.Error())
 		return "", errors.Wrap(err, "failed to generate token")
@@ -78,7 +78,7 @@ func (m Client) GetUserFromEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
-func generateToken(userID string) (string, error) {
+func generateToken(user *models.User) (string, error) {
 	log.Info("Generating JWT token")
 
 	tokenExpiry, err := time.ParseDuration(viper.GetString(config.TokenExpiry))
@@ -94,7 +94,11 @@ func generateToken(userID string) (string, error) {
 	expirationTime := time.Now().Add(tokenExpiry)
 
 	claims := &models.JwtClaims{
-		UserID: userID,
+		TokenInfo: models.TokenInfo{
+			UserID:    user.ID,
+			UserName:  user.Name,
+			UserEmail: user.Email,
+		},
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
