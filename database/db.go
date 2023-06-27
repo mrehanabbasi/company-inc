@@ -15,6 +15,9 @@ import (
 const (
 	companyCollectionName = "Company"
 	userCollectionName    = "User"
+
+	companyTestCollectionName = "Company_Test"
+	userTestCollectionName    = "User_Test"
 )
 
 type Client struct {
@@ -39,16 +42,41 @@ func InitDB(ctx context.Context) *Client {
 	return &Client{Conn: cli}
 }
 
+func InitTestDB(ctx context.Context) *Client {
+	uri := "mongodb://user:password@localhost:27017"
+	log.Info("Initializing MongoDB: ", "mongodb://****:****@localhost:27017")
+
+	cli, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+	if err != nil {
+		log.Panic(err.Error())
+		panic(err)
+	}
+
+	return &Client{Conn: cli}
+}
+
 func (m *Client) GetMongoDatabase() *mongo.Database {
 	return m.Conn.Database(viper.GetString(config.DbName))
+}
+
+func (m *Client) GetMongoTestDatabase() *mongo.Database {
+	return m.Conn.Database("test_company_db")
 }
 
 func (m *Client) GetMongoCompanyCollection() *mongo.Collection {
 	return m.GetMongoDatabase().Collection(companyCollectionName)
 }
 
+func (m *Client) GetMongoTestCompanyCollection() *mongo.Collection {
+	return m.GetMongoTestDatabase().Collection(companyTestCollectionName)
+}
+
 func (m *Client) GetMongoUserCollection() *mongo.Collection {
 	return m.GetMongoDatabase().Collection(userCollectionName)
+}
+
+func (m *Client) GetMongoTestUserCollection() *mongo.Collection {
+	return m.GetMongoTestDatabase().Collection(userTestCollectionName)
 }
 
 func (m *Client) InitIndices() error {
