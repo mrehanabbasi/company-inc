@@ -95,3 +95,14 @@ func (m Client) DeleteCompany(id string) error {
 
 	return nil
 }
+
+func (m Client) DeleteAllTestCompanies() error {
+	collection := m.GetMongoTestCompanyCollection()
+	_, err := collection.DeleteMany(context.TODO(), bson.M{})
+	if err != nil {
+		log.Error(err.Error())
+		return errors.Wrap(err, "failed to delete all companies")
+	}
+
+	return nil
+}
